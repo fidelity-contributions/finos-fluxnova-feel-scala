@@ -1,8 +1,14 @@
 # Contributing to FEEL-Scala
 
+This document describes the contribution process and governance policies of the FINOS FloWave project. The project is also governed by the [Linux Foundation Antitrust Policy](https://www.linuxfoundation.org/antitrust-policy/), and the FINOS [IP Policy]( https://community.finos.org/governance-docs/IP-policy.pdf), [Code of Conduct](https://community.finos.org/docs/governance/code-of-conduct), [Collaborative Principles](https://community.finos.org/docs/governance/collaborative-principles/), and [Meeting Procedures](https://community.finos.org/docs/governance/meeting-procedures/).
+
 :tada: First off, thanks for taking the time to contribute! :+1:
 
 ## How can I contribute?
+
+### Contributor License Agreement (CLA)
+
+All contributors must have a contributor license agreement (CLA) on file with FINOS before their pull requests will be merged. Please review the FINOS [contribution requirements](https://community.finos.org/docs/governance/Software-Projects/contribution-compliance-requirements) and submit (or have your employer submit) the required CLA before submitting a pull request.
 
 ### Reporting bugs
 
@@ -214,3 +220,7 @@ The documentation is published using GitHub actions.
 > Only for Camunda developers. 
 
 Open the Camunda Slack channel [#ask-dmn-feel](https://camunda.slack.com/archives/C01QYD808A3). Click on the bookmark "Release FEEL-Scala" and follow the instructions. 🏗️
+
+## Governance
+
+See https://github.com/finos/flowave-bpm-platform/blob/main/CONTRIBUTING.md#governance.
