@@ -396,20 +396,20 @@
               <relocations>
                 <relocation>
                   <pattern>scala</pattern>
-                  <shadedPattern>camundajar.impl.scala</shadedPattern>
+                  <shadedPattern>flowavejar.impl.scala</shadedPattern>
                 </relocation>
 
                 <relocation>
                   <pattern>fastparse</pattern>
-                  <shadedPattern>camundajar.impl.fastparse</shadedPattern>
+                  <shadedPattern>flowavejar.impl.fastparse</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>geny</pattern>
-                  <shadedPattern>camundajar.impl.geny</shadedPattern>
+                  <shadedPattern>flowavejar.impl.geny</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>sourcecode</pattern>
-                  <shadedPattern>camundajar.impl.sourcecode</shadedPattern>
+                  <shadedPattern>flowavejar.impl.sourcecode</shadedPattern>
                 </relocation>
 
               </relocations>
