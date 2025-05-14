@@ -193,7 +193,7 @@ class BuiltinStringFunctionsTest
 
     evaluateExpression(""" to base64("FEEL") """) should returnResult("RkVFTA==")
 
-    evaluateExpression(""" to base64(value: "Flowave") """) should returnResult("Q2FtdW5kYQ==")
+    evaluateExpression(""" to base64(value: "Flowave") """) should returnResult("Rmxvd2F2ZQ==")
   }
 
   "A is blank() function" should "return true if the string contains only whitespace" in {
