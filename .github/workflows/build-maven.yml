@@ -30,7 +30,7 @@ jobs:
       uses: ./.github/actions/java-setup
 
     - name: Unit tests
-      run: mvn -B -e clean -P checkFormat verify
+      run: mvn -B -e clean -P checkFormat verify -s ./settings.xml
 
     - name: Build and Deploy
-      run: mvn -B -e clean deploy
+      run: mvn -B -e clean deploy -s ./settings.xml
