@@ -612,11 +612,12 @@
   </repositories>
 
   <distributionManagement>
+    <!-- commenting this as we are using central-publishing-maven-plugin to publish to Maven Central
     <repository>
       <id>fluxnova-feel-scala</id>
       <name>GitHub Fluxnova Maven Packages</name>
       <url>https://maven.pkg.github.com/finos/fluxnova-feel-scala</url>
-    </repository>
+    </repository-->
     <snapshotRepository>
       <id>fluxnova-feel-scala</id>
       <name>GitHub Fluxnova Maven Packages</name>
