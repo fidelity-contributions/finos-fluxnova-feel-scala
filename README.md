@@ -34,7 +34,7 @@ Contributions are welcome.Please have a look at the [Contribution Guide](./CONTR
 
 ## Release
 
-Releases are handled through GitHub Actions using `.github/workflows/release.yml`. Start from a `MAJOR.MINOR.PATCH-SNAPSHOT` Maven version, then push a `release/major`, `release/minor`, or `release/patch` branch, or run the workflow manually with a release type, to publish signed Maven artifacts, create the release tag, and bump `pom.xml` to the next development version.
+Releases are handled manually through GitHub Actions using `.github/workflows/release.yml`. Start from a `MAJOR.MINOR.PATCH-SNAPSHOT` Maven version, create and push a `release/major`, `release/minor`, or `release/patch` branch, then manually run the workflow on that branch to publish signed Maven artifacts, create the release tag, and bump `pom.xml` to the next development version.
 
 For complete release prerequisites, branch naming rules, and verification steps, see [RELEASE.md](RELEASE.md).
 

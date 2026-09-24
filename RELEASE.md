@@ -43,7 +43,7 @@ git checkout main
 git pull origin main
 ```
 
-Then create one of the supported release branches below and push it. The workflow runs on pushes to `release/**` branches and can also be started manually with `workflow_dispatch` by selecting `major`, `minor`, or `patch` as the release type.
+Then create one of the supported release branches below and push it. The workflow is manual-only: after pushing the branch, run `.github/workflows/release.yml` from GitHub Actions and select the release branch as the workflow branch. If the selected branch does not start with `release/`, the release job is skipped.
 
 ## Major Release Example
 
@@ -54,7 +54,7 @@ If the current version is `1.0.0-SNAPSHOT`:
 - The workflow releases `1.0.0`.
 - The workflow prepares the next development version as `2.0.0-SNAPSHOT`.
 
-Create and push the branch:
+Create and push the branch, then run the release workflow manually using this branch:
 
 ```bash
 git checkout -b release/major
@@ -70,7 +70,7 @@ If the current version is `1.0.0-SNAPSHOT`:
 - The workflow releases `1.0.0`.
 - The workflow prepares the next development version as `1.1.0-SNAPSHOT`.
 
-Create and push the branch:
+Create and push the branch, then run the release workflow manually using this branch:
 
 ```bash
 git checkout -b release/minor
@@ -86,7 +86,7 @@ If the current version is `1.0.0-SNAPSHOT`:
 - The workflow releases `1.0.0`.
 - The workflow prepares the next development version as `1.0.1-SNAPSHOT`.
 
-Create and push the branch:
+Create and push the branch, then run the release workflow manually using this branch:
 
 ```bash
 git checkout -b release/patch
@@ -95,7 +95,7 @@ git push origin release/patch
 
 ## What the Workflow Does
 
-After the branch is pushed, `.github/workflows/release.yml` will:
+After the workflow is manually started on a `release/` branch, `.github/workflows/release.yml` will:
 
 - Check out the release branch with full Git history.
 - Set up Temurin JDK 21 and Maven Central/GPG credentials.
@@ -122,7 +122,8 @@ Verify:
 
 ## Notes
 
-- Use `release/major`, `release/minor`, or `release/patch` for branch-triggered releases.
+- Use `release/major`, `release/minor`, or `release/patch` for manual releases.
 - The workflow also recognizes child branches such as `release/major/<name>`, `release/minor/<name>`, and `release/patch/<name>`.
+- The workflow can be started manually from other branches, but the release job will be skipped unless the selected branch starts with `release/`.
 - `hotfix/*` branches are not supported by the current workflow.
 - For exact workflow steps, see `.github/workflows/release.yml`.

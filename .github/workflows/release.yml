@@ -16,9 +16,6 @@ env:
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'release/**'
 
 permissions:
   contents: write
@@ -26,6 +23,7 @@ permissions:
 jobs:
   publish-central:
     name: Publish to Maven Central
+    if: startsWith(github.ref, 'refs/heads/release/')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
