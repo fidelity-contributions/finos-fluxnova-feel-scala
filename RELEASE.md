@@ -1,7 +1,8 @@
 # Release Instructions
 
 This project releases through the GitHub Actions workflow in `.github/workflows/release.yml`.
-You do not need to run Maven release commands manually. Create the correct release branch and push it; the workflow prepares and performs the release.
+You do not need to run the Maven release commands manually. Create the correct release branch, push it, and then manually run the release workflow from that branch.
+The workflow runs only when the selected branch starts with `release/`; other branches are ignored.
 
 ## Before You Start
 
@@ -9,7 +10,7 @@ Make sure:
 
 - You have permission to push branches and tags.
 - The build is green before releasing.
-- The root `pom.xml` version is in `MAJOR.MINOR.PATCH-SNAPSHOT` format without leading zeroes.
+- The root `pom.xml` version ends with `-SNAPSHOT` and uses `MAJOR.MINOR.PATCH-SNAPSHOT` format without leading zeroes.
   - Example: `1.0.0-SNAPSHOT`
 - The required GitHub secrets are configured:
   - `CI_DEPLOY_USERNAME`, `CI_DEPLOY_PASSWORD`
@@ -43,7 +44,7 @@ git checkout main
 git pull origin main
 ```
 
-Then create one of the supported release branches below and push it. The workflow is manual-only: after pushing the branch, run `.github/workflows/release.yml` from GitHub Actions and select the release branch as the workflow branch. If the selected branch does not start with `release/`, the release job is skipped.
+Then create one of the supported release branches below and push it. After pushing, manually run the **Release and publish artifacts to Maven Central** workflow and select the release branch. If the selected branch does not start with `release/`, the release job is skipped.
 
 ## Major Release Example
 
@@ -54,7 +55,7 @@ If the current version is `1.0.0-SNAPSHOT`:
 - The workflow releases `1.0.0`.
 - The workflow prepares the next development version as `2.0.0-SNAPSHOT`.
 
-Create and push the branch, then run the release workflow manually using this branch:
+Create and push the branch:
 
 ```bash
 git checkout -b release/major
@@ -70,60 +71,70 @@ If the current version is `1.0.0-SNAPSHOT`:
 - The workflow releases `1.0.0`.
 - The workflow prepares the next development version as `1.1.0-SNAPSHOT`.
 
-Create and push the branch, then run the release workflow manually using this branch:
+Create and push the branch:
 
 ```bash
 git checkout -b release/minor
 git push origin release/minor
 ```
 
+After a major or minor release, create a PR from the release branch back to `main` so the next development version update is preserved.
+
 ## Patch Release Example
 
 Use this when releasing a bug fix for the current minor version.
 
-If the current version is `1.0.0-SNAPSHOT`:
+If `1.0.0` is already released and you need to publish `1.0.1`:
 
-- The workflow releases `1.0.0`.
-- The workflow prepares the next development version as `1.0.1-SNAPSHOT`.
+- Check out the released tag `v1.0.0` locally.
+- Set the project version to `1.0.1-SNAPSHOT`.
+- Commit the patch fix and version change, then push the branch as `release/patch/1.0.1`.
+- Run the release workflow from `release/patch/1.0.1`.
+- Verify the workflow creates the release tag `v1.0.1`; the next development version on the patch branch can be ignored.
 
-Create and push the branch, then run the release workflow manually using this branch:
+Example:
 
 ```bash
-git checkout -b release/patch
-git push origin release/patch
+git checkout -b release/patch/1.0.1 v1.0.0
+./mvnw versions:set -DnewVersion=1.0.1-SNAPSHOT -DgenerateBackupPoms=false
+git add .
+git commit -m "Prepare patch release 1.0.1"
+git push origin release/patch/1.0.1
 ```
 
-## What the Workflow Does
+After a patch release, merge or cherry-pick the patch changes back into `main` or the current development branch so the fix is included in future releases.
 
-After the workflow is manually started on a `release/` branch, `.github/workflows/release.yml` will:
+After pushing a release branch:
 
-- Check out the release branch with full Git history.
-- Set up Temurin JDK 21 and Maven Central/GPG credentials.
-- Resolve Maven dependencies and plugins using `settings.xml`.
-- Compute:
-  - `RELEASE_VERSION` from the current Maven version without `-SNAPSHOT`.
-  - `TAG` as `v<release-version>`.
-  - `DEVELOPMENT_VERSION` from the release branch type.
-- Validate that the current Maven version is in `MAJOR.MINOR.PATCH-SNAPSHOT` format without leading zeroes.
-- Run `mvn -B release:prepare -P release` with the computed release version, next development version, and tag.
-- Run `mvn -B release:perform -P release -DinteractiveMode=false`.
+1. Go to **GitHub Actions**.
+2. Select **Release and publish artifacts to Maven Central**.
+3. Click **Run workflow**.
+4. In the branch dropdown, select the release branch you pushed, for example `release/major`, `release/minor`, or `release/patch/1.0.1`.
+5. Click **Run workflow** to start the release.
 
-The `release` Maven profile signs release artifacts and attaches source and Javadoc JARs. The workflow is Maven-focused and publishes through the configured Maven release and central publishing setup.
+## What the Workflow Publishes
+
+After the workflow is manually run, `.github/workflows/release.yml` will:
+
+- Build, sign, and publish Maven artifacts through the configured Maven Central publishing setup.
+- Create the Git tag, for example `v1.0.0`.
+- Attach source and Javadoc JARs to the release artifacts.
 
 ## After the Release
 
 Verify:
 
 - The GitHub Actions workflow completed successfully.
-- Log in to Sonatype to verify artifacts and click the publish button to publish to Maven Central. Note: Ask FINOS admin for Sonatype credentials.
+- Log in to [Sonatype Central](https://my.sonatype.com/) after the workflow finishes. Obtain credentials from a FINOS admin.
+  - Verify that the published artifacts are present and appear correct.
+  - Click **Publish** in Sonatype Central to release the artifacts to Maven Central.
+  - After publishing, check [Maven Central Search](https://central.sonatype.com/search). The artifacts may take a few minutes to a couple of hours to appear.
+- The Maven artifacts are available in Maven Central.
 - The Git tag exists, for example `v1.0.0`.
-- The release commit and next development version commit were pushed.
-- The root `pom.xml` was moved to the expected next `-SNAPSHOT` version.
+- For major and minor releases, the root `pom.xml` was moved to the expected next `-SNAPSHOT` version and the release branch was merged back to `main`.
 
 ## Notes
 
-- Use `release/major`, `release/minor`, or `release/patch` for manual releases.
-- The workflow also recognizes child branches such as `release/major/<name>`, `release/minor/<name>`, and `release/patch/<name>`.
-- The workflow can be started manually from other branches, but the release job will be skipped unless the selected branch starts with `release/`.
-- `hotfix/*` branches are not supported by the current workflow.
+- Use `release/major`, `release/minor`, `release/patch`, or their `release/<type>/*` variants as shown above.
+- The workflow runs only from branches that start with `release/`, and the version bump logic supports only `major`, `minor`, or `patch` release types.
 - For exact workflow steps, see `.github/workflows/release.yml`.
